@@ -1,7 +1,7 @@
 export default class Component {
-  constructor($target, params) {
+  constructor($target, props) {
     this.$target = $target;
-    this.params = params;
+    this.props = props;
     this.state = null;
     this.render();
   }

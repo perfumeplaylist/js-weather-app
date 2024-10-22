@@ -1,6 +1,6 @@
 import App from "./src/App.js";
 import WeatherInfo from "./src/components/WeatherInfo.js";
-import { Router } from "./src/router.js";
+import Router from "./src/core/router.js";
 
 new Router([
   { path: "/weather", component: App },

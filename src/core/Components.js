@@ -16,9 +16,12 @@ export default class Component {
   }
 
   render() {
-    this.$target = this.template();
+    this.$target.innerHTML = this.template();
+    this.mounted();
     this.addEvent();
   }
+
+  mounted() {}
 
   addEvent() {}
 }

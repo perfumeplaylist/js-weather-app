@@ -9,7 +9,7 @@ export default class FetchApi {
 
   async get(params) {
     const newParams = new URLSearchParams({ ...params, ...this.commonParams });
-    const res = await fetch(`${this.url}${new URLSearchParams(newParams)}`);
+    const res = await fetch(`${this.url}${newParams}`);
     return res.json();
   }
 }

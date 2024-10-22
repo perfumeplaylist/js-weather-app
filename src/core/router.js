@@ -1,6 +1,6 @@
-import { $ } from "./utils.js";
+import { $ } from "../utils.js";
 
-export class Router {
+export default class Router {
   constructor(router) {
     this.router = router;
     this.init();
@@ -61,7 +61,6 @@ export class Router {
     const matchRouter = this.findRouter(path);
     if (!!matchRouter) {
       const { component, params } = matchRouter;
-      console.log(params);
       const $target = $("#app");
       new component($target, params);
     }

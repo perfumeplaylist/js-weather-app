@@ -7,6 +7,10 @@ export default class Router {
   }
 
   init() {
+    window.location.pathname === "/"
+      ? (window.location.pathname = "/weather")
+      : window.location.pathname;
+
     this.renderPage(window.location.pathname);
 
     window.addEventListener("navigate", (event) => {

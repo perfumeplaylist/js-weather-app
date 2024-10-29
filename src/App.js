@@ -49,7 +49,7 @@ export default class App extends Component {
         ],
       });
     } catch (error) {
-      // new ErrorBoundary(error);
+      alert(error.message);
     }
   }
 }

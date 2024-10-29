@@ -31,7 +31,7 @@ export default class WeatherList extends Component {
       }));
       weatherCard.setState(filterWeather);
     } catch (error) {
-      throw error;
+      alert(error.message);
     }
   }
 }

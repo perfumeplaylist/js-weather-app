@@ -1,19 +1,53 @@
-import { $ } from "./utils.js";
+import { $, routerPush } from "./utils.js";
 import weatherApi from "./service/WeatherApi.js";
 import Component from "./core/Components.js";
 import WeatherInfo from "./components/WeatherInfo.js";
+import Header from "./components/Header.js";
 
 export default class App extends Component {
+  init() {
+    this.state = {
+      isPending: false,
+      isError: false,
+    };
+  }
+
   template() {
-    return `<main></main>`;
+    return `
+    <div class='wrapper'>
+      <header></header>
+      <main>
+        <section id=outlet class=weather></section>
+      </main>
+    </div>`;
   }
 
   async mounted() {
-    const $main = $("main");
-    const weatherInfo = new WeatherInfo($main);
+    const $header = $("header");
+    const $weather = $(".weather");
+    new Header($header);
+    const weatherInfo = new WeatherInfo($weather, {
+      clickEvent: () => routerPush("/weather/seoul"),
+    });
     try {
       const res = await weatherApi.getCurrentWeather({ q: "seoul" });
-      weatherInfo.setState({ ...res });
+      weatherInfo.setState({
+        currentTime: Math.floor(Date.now() / 1000),
+        weather: [
+          {
+            tempInfo: {
+              average: res.temp,
+              max: res.temp_max,
+              min: res.temp_min,
+            },
+            weatherInfo: {
+              icon: res.weather[0].icon,
+              name: res.weather[0].main,
+            },
+            name: res.name,
+          },
+        ],
+      });
     } catch (error) {
       // new ErrorBoundary(error);
     }

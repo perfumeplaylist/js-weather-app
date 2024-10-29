@@ -1,0 +1,25 @@
+li {
+  list-style: none;
+}
+
+.weather {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid black;
+}
+
+.weather_header {
+  display: flex;
+}
+
+.weather_container {
+  display: flex;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: #ccc;
+  margin: 20px 0;
+}

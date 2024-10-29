@@ -13,60 +13,80 @@ export default class Router {
 
     this.renderPage(window.location.pathname);
 
+    window.addEventListener("popstate", () => {
+      this.renderPage(window.location.pathname);
+    });
+
     window.addEventListener("navigate", (event) => {
       const {
         detail: { path },
       } = event;
-      this.renderPage(path);
+
       history.pushState({}, "", path);
+      this.renderPage(path);
     });
   }
 
-  push(path) {
-    const navigateEvent = new CustomEvent("navigate", { detail: { path } });
-    window.dispatchEvent(navigateEvent);
+  matchPathToUrl(path, url) {
+    const params = {};
+
+    if (path === url) return { isMatched: true, params };
+
+    const pathSegment = path.split("/");
+    const urlSegment = url.split("/");
+
+    const isMatched =
+      pathSegment.length === urlSegment.length &&
+      pathSegment.every((seg, i) => {
+        if (seg === urlSegment[i]) return true;
+        else if (seg.startsWith(":")) {
+          params[seg.slice(1)] = urlSegment[i];
+          return true;
+        }
+        return false;
+      });
+
+    return { isMatched, params };
   }
 
-  findRouter(path) {
-    const splitPath = path.split("/").filter(Boolean);
+  findRouter(routes, targetURL) {
+    const routeFromRoot = [];
 
-    for (const route of this.router) {
-      const splitRoute = route.path.split("/").filter(Boolean);
+    const findRoute = (routes, currentPath) => {
+      for (const route of routes) {
+        const path = (currentPath + route.path).replace("//", "/");
+        const { isMatched, params } = this.matchPathToUrl(path, targetURL);
 
-      if (splitPath.length !== splitRoute.length) {
-        if (!splitRoute.includes(":")) continue;
-      }
-
-      let isMatch = true;
-      const params = {};
-
-      for (let i = 0; i < splitRoute.length; i++) {
-        if (splitRoute[i].startsWith(":")) {
-          const paramName = splitRoute[i].slice(1);
-          params[paramName] = splitPath[i];
-          continue;
+        if (isMatched) {
+          return { ...route, params };
         }
+        if (route.children) {
+          const childRoute = findRoute(route.children, path);
 
-        if (splitRoute[i] !== splitPath[i]) {
-          isMatch = false;
-          break;
+          if (childRoute) {
+            routeFromRoot.push({ ...route, params: {} });
+            return childRoute;
+          }
         }
       }
+      return null;
+    };
 
-      if (isMatch) {
-        return { ...route, params };
-      }
-    }
+    const matchedRoute = findRoute(routes, "/");
 
-    return null;
+    if (matchedRoute) routeFromRoot.unshift(matchedRoute);
+
+    return { match: matchedRoute, routes: routeFromRoot };
   }
 
   renderPage(path) {
-    const matchRouter = this.findRouter(path);
+    const matchRouter = this.findRouter(this.router, path);
     if (!!matchRouter) {
-      const { component, params } = matchRouter;
-      const $target = $("#app");
-      new component($target, params);
+      while (matchRouter.routes.length) {
+        const { component, params } = matchRouter.routes.pop();
+        const $target = $("#app");
+        new component($target, params);
+      }
     }
   }
 }

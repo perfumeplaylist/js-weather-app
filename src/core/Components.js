@@ -10,9 +10,9 @@ export default class Component {
 
   init() {}
 
-  setState(newState) {
+  setState(newState, shouldRender = true) {
     this.state = newState;
-    this.render();
+    if (shouldRender) this.render();
   }
 
   template() {

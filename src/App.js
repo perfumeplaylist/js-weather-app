@@ -1,5 +1,5 @@
 import { $, routerPush } from "./utils.js";
-import weatherApi from "./service/WeatherApi.js";
+import weatherApi from "./service/WeatherApi.ts";
 import Component from "./core/Components.js";
 import WeatherInfo from "./components/WeatherInfo.js";
 import Header from "./components/Header.js";
@@ -30,7 +30,9 @@ export default class App extends Component {
       clickEvent: () => routerPush("/weather/seoul"),
     });
     try {
-      const res = await weatherApi.getCurrentWeather({ q: "seoul" });
+      const res = await weatherApi.getCurrentWeather({
+        q: "seoul",
+      });
       weatherInfo.setState({
         currentTime: Math.floor(Date.now() / 1000),
         weather: [

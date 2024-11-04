@@ -5,11 +5,15 @@ import Button from "./common/Button.js";
 import { $, routerPush } from "../utils.js";
 
 export default class Header extends Component {
+  init() {
+    this.state = { value: "" };
+  }
+
   template() {
     return `
-        <div class=header_title></div>
-        <input class=header_input />
-        <div class=header_button></div>
+        <div class="header_title"></div>
+        <div class="header_input"></div>
+        <div class="header_button"></div>
     `;
   }
 
@@ -18,17 +22,24 @@ export default class Header extends Component {
     const $input = $(".header_input");
     const $button = $(".header_button");
     new Heading($header, { level: 2, content: "Weather" });
+
     new Input($input, {
       placeholder: "도시 검색",
       type: "text",
       inputEvent: (value) => {
-        routerPush(`/weather/${value}`);
+        this.setState({ value }, false);
+      },
+      enterEvent: () => {
+        routerPush(`/weather/${this.state.value}`);
       },
     });
+
     new Button($button, {
       type: "button",
       content: "검색",
-      buttonEvent: () => {},
+      buttonEvent: () => {
+        routerPush(`/weather/${this.state.value}`);
+      },
     });
   }
 }

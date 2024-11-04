@@ -21,7 +21,13 @@ export default class Header extends Component {
     const $header = $(".header_title");
     const $input = $(".header_input");
     const $button = $(".header_button");
-    new Heading($header, { level: 2, content: "Weather" });
+    new Heading($header, {
+      level: 2,
+      content: "Weather",
+      clickEvent: () => {
+        routerPush(`/weather`);
+      },
+    });
 
     new Input($input, {
       placeholder: "도시 검색",
